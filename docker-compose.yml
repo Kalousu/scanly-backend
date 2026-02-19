@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: scanly-db
+    environment:
+      POSTGRES_USER: scanly_user
+      POSTGRES_PASSWORD: scanly123
+      POSTGRES_DB: scanly_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data

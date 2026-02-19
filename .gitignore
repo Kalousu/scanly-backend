@@ -1,0 +1,16 @@
+# IDE specific files
+.vscode/
+.idea/
+*.iml
+
+# Java files
+*.class
+target/
+
+# Database files
+./data/postgres
+*.db
+
+# OS specific
+.DS_Store
+Thumbs.db
