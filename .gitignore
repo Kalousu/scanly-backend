@@ -8,7 +8,7 @@
 target/
 
 # Database files
-./data/postgres
+data/postgres
 *.db
 
 # OS specific
