@@ -2,7 +2,10 @@ package com.scanly.scanlyBackend.controllers;
 
 import java.util.List;
 
+import com.scanly.scanlyBackend.services.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,31 +19,16 @@ import com.scanly.scanlyBackend.dtos.ProductResponse;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductRepository productRepository;
-    
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    @Autowired
+    ProductService productService;
 
     @GetMapping
-    public List<ProductResponse> getAllProducts() {
-        return productRepository.findAll().stream()
-                .map(product -> new ProductResponse(
-                        product.getBarcode(),
-                        product.getName(),
-                        product.getPrice()
-                ))
-                .toList();
+    public ResponseEntity<List<ProductResponse>> getAllProducts() {
+        return new ResponseEntity<>(productService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{barcode}")
-    public ProductResponse getProductByBarcode(@PathVariable String barcode) {
-        return productRepository.findByBarcode(barcode)
-                .map(product -> new ProductResponse(
-                        product.getBarcode(),
-                        product.getName(),
-                        product.getPrice()
-                ))
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produkt mit Barcode " + barcode + " nicht gefunden"));
+    public ResponseEntity<ProductResponse> getProductByBarcode(@PathVariable String barcode) {
+        return new ResponseEntity<>(productService.findByBarcode(barcode), HttpStatus.OK);
     }
 }
