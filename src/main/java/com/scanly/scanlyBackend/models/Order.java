@@ -12,11 +12,11 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "orders")
 public class Order {
 
     public Order(OrderStatus status){
@@ -26,10 +26,14 @@ public class Order {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long orderId;
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
     @CreationTimestamp
     private Instant creationDate;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    public void addItem(OrderItem item){
+        items.add(item);
+    }
 }

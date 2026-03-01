@@ -1,5 +1,7 @@
 package com.scanly.scanlyBackend.controllers;
 
+import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
+import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +25,19 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<Long> createOrder() {
         return new ResponseEntity<>(orderService.createOrder(), HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("/{orderId}/items")
+    public ResponseEntity<Object> addItem(
+            @PathVariable Long orderId,
+            @RequestBody AddOrderItemRequest item
+    ) {
+        try{
+            orderService.addItem(orderId, item);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch(ProductNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 }
