@@ -68,6 +68,8 @@ public class OrderService {
         );
         orderItem.setTotalPrice(orderItem.calculateTotalPrice(orderItem.getAmount(), orderItem.getTaxRate(), orderItem.getUnitPrice()));
         order.addItem(orderItem);
+        BigDecimal orderTotal = order.getItems().stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        order.setTotalPrice(orderTotal);
         orderRepo.save(order);
     }
 }
