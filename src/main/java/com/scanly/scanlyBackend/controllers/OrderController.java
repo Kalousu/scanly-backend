@@ -1,6 +1,7 @@
 package com.scanly.scanlyBackend.controllers;
 
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
+import com.scanly.scanlyBackend.dtos.OrderResponse;
 import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.services.OrderService;
@@ -18,7 +19,7 @@ public class OrderController {
     private OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders() {
+    public ResponseEntity<List<OrderResponse>> getAllOrders() {
         return new ResponseEntity<>(orderService.getAll(), HttpStatus.OK);
     }
 

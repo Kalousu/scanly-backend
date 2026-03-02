@@ -30,6 +30,9 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal pricePerUnit;
 
+    @Column(nullable = false)
+    private BigDecimal taxRate;
+
     @Enumerated(EnumType.STRING)
     private PricingType pricingType;
 }

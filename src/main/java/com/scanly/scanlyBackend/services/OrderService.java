@@ -1,6 +1,8 @@
 package com.scanly.scanlyBackend.services;
 
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
+import com.scanly.scanlyBackend.dtos.OrderItemResponse;
+import com.scanly.scanlyBackend.dtos.OrderResponse;
 import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.models.OrderItem;
@@ -22,8 +24,31 @@ public class OrderService {
     @Autowired
     ProductRepository productRepo;
 
-    public List<Order> getAll(){
-        return orderRepo.findAll();
+    public List<OrderResponse> getAll(){
+        return orderRepo.findAll().stream()
+                .map(order -> {
+                    List<OrderItemResponse> itemResponses = order.getItems().stream()
+                            .map(item -> new OrderItemResponse(
+                                    item.getId(),
+                                    item.getAmount(),
+                                    item.getProduct().getName(),
+                                    item.getUnitPrice(),
+                                    item.getTaxRate(),
+                                    item.getTotalPrice()
+                            )).toList();
+
+                    BigDecimal totalGross = itemResponses.stream()
+                            .map(OrderItemResponse::totalPriceGross)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                    return new OrderResponse(
+                            order.getOrderId(),
+                            order.getCreationDate(),
+                            itemResponses,
+                            totalGross,
+                            order.getStatus()
+                    );
+                }).toList();
     }
 
     public Long createOrder(){
@@ -32,15 +57,17 @@ public class OrderService {
     }
     @Transactional
     public void addItem(Long orderId, AddOrderItemRequest item){
-        Order currOrder = orderRepo.findById(orderId).get();
-        Product product = productRepo.findByCode(item.code()).orElseThrow(() -> new ProductNotFoundException("Product not found"));
-        OrderItem orderItem = new OrderItem();
-        orderItem.setProduct(product);
-        orderItem.setOrder(currOrder);
-        orderItem.setAmount(BigDecimal.valueOf(item.amount()));
-        orderItem.setUnitPrice(product.getPricePerUnit());
-        orderItem.setTotalPrice(product.getPricePerUnit().multiply(BigDecimal.valueOf(item.amount())));
-        currOrder.addItem(orderItem);
-        orderRepo.save(currOrder);
+        Order order = orderRepo.findById(orderId).get();
+        Product product = productRepo.findByCode(item.code()).get();
+        OrderItem orderItem = new OrderItem(
+                order,
+                product,
+                new BigDecimal(item.amount()),
+                product.getPricePerUnit(),
+                product.getTaxRate()
+        );
+        orderItem.setTotalPrice(orderItem.calculateTotalPrice(orderItem.getAmount(), orderItem.getTaxRate(), orderItem.getUnitPrice()));
+        order.addItem(orderItem);
+        orderRepo.save(order);
     }
 }
