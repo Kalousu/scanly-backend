@@ -2,9 +2,12 @@ package com.scanly.scanlyBackend.controllers;
 
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
 import com.scanly.scanlyBackend.dtos.OrderResponse;
+import com.scanly.scanlyBackend.dtos.PaymentRequest;
 import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.services.OrderService;
+import com.scanly.scanlyBackend.services.PaymentService;
+import com.scanly.scanlyBackend.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,9 @@ import java.util.List;
 public class OrderController {
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
@@ -39,6 +45,19 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch(ProductNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/{orderId}/checkout")
+    public ResponseEntity<Object> checkout(
+            @PathVariable Long orderId,
+            @RequestBody PaymentRequest paymentRequest
+    ){
+        try{
+            paymentService.processPayment(orderId, paymentRequest);
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch(Exception e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }
