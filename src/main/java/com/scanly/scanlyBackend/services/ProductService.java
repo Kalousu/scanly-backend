@@ -19,20 +19,24 @@ public class ProductService {
     public List<ProductResponse> getAll(){
         return productRepository.findAll().stream()
                 .map(product -> new ProductResponse(
-                        product.getBarcode(),
+                        product.getCode(),
                         product.getName(),
-                        product.getPrice()
+                        product.getPricePerUnit()
                 ))
                 .toList();
     }
 
     public ProductResponse findByBarcode(String barcode){
-        return productRepository.findByBarcode(barcode)
+        return productRepository.findByCode(barcode)
                 .map(product -> new ProductResponse(
-                        product.getBarcode(),
+                        product.getCode(),
                         product.getName(),
-                        product.getPrice()
+                        product.getPricePerUnit()
                 ))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produkt mit Barcode " + barcode + " nicht gefunden"));
+    }
+
+    public Optional<Product> findEntityByBarcode(String barcode){
+        return productRepository.findByCode(barcode);
     }
 }
