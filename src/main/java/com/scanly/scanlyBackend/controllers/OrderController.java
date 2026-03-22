@@ -29,11 +29,15 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderResponse> getOrderById(@PathVariable long orderId) {
+        return new ResponseEntity<>(orderService.getById(orderId), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<Long> createOrder() {
         return new ResponseEntity<>(orderService.createOrder(), HttpStatus.CREATED);
     }
-
 
     @PostMapping("/{orderId}/items")
     public ResponseEntity<Object> addItem(
