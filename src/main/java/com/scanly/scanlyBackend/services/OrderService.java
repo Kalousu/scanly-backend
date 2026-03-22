@@ -3,6 +3,7 @@ package com.scanly.scanlyBackend.services;
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
 import com.scanly.scanlyBackend.dtos.OrderItemResponse;
 import com.scanly.scanlyBackend.dtos.OrderResponse;
+import com.scanly.scanlyBackend.exceptions.OrderNotFoundException;
 import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.models.OrderItem;
@@ -51,10 +52,38 @@ public class OrderService {
                 }).toList();
     }
 
+    public OrderResponse getById(Long orderId){
+        return orderRepo.findById(orderId)
+                .map(order -> {
+                    List<OrderItemResponse> itemResponses = order.getItems().stream()
+                            .map(item -> new OrderItemResponse(
+                                    item.getId(),
+                                    item.getAmount(),
+                                    item.getProduct().getName(),
+                                    item.getUnitPrice(),
+                                    item.getTaxRate(),
+                                    item.getTotalPrice()
+                            )).toList();
+
+                    BigDecimal totalGross = itemResponses.stream()
+                            .map(OrderItemResponse::totalPriceGross)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                    return new OrderResponse(
+                            order.getOrderId(),
+                            order.getCreationDate(),
+                            itemResponses,
+                            totalGross,
+                            order.getStatus()
+                    );
+                }).orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
+    }
+
     public Long createOrder(){
         Order savedOrder = orderRepo.save(new Order(OrderStatus.OPEN));
         return savedOrder.getOrderId();
     }
+
     @Transactional
     public void addItem(Long orderId, AddOrderItemRequest item){
         Order order = orderRepo.findById(orderId).get();
