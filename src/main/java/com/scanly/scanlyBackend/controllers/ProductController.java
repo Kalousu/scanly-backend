@@ -27,7 +27,12 @@ public class ProductController {
         return new ResponseEntity<>(productService.getAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/{barcode}")
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable String category) {
+        return new ResponseEntity<>(productService.getByCategory(category), HttpStatus.OK);
+    }
+
+    @GetMapping("/barcode/{barcode}")
     public ResponseEntity<ProductResponse> getProductByBarcode(@PathVariable String barcode) {
         return new ResponseEntity<>(productService.findByBarcode(barcode), HttpStatus.OK);
     }

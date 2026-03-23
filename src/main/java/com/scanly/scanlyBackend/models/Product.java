@@ -1,6 +1,7 @@
 package com.scanly.scanlyBackend.models;
 
 import com.scanly.scanlyBackend.models.enums.PricingType;
+import com.scanly.scanlyBackend.models.enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,4 +36,7 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     private PricingType pricingType;
+
+    @Enumerated(EnumType.STRING)
+    private ProductCategory productCategory;
 }
