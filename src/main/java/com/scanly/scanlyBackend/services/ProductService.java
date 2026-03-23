@@ -2,6 +2,7 @@ package com.scanly.scanlyBackend.services;
 
 import com.scanly.scanlyBackend.dtos.ProductResponse;
 import com.scanly.scanlyBackend.models.Product;
+import com.scanly.scanlyBackend.models.enums.ProductCategory;
 import com.scanly.scanlyBackend.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,30 @@ public class ProductService {
                 .map(product -> new ProductResponse(
                         product.getCode(),
                         product.getName(),
+                        product.getProductCategory(),
                         product.getPricePerUnit()
                 ))
                 .toList();
+    }
+
+    public List<ProductResponse> getByCategory(String category){
+        ProductCategory productCategory;
+
+        try {
+            productCategory = ProductCategory.valueOf(category.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Ungültige Kategorie: " + category);
+        }
+
+        return productRepository.findAllByProductCategory(productCategory).stream()
+                .map(product -> new ProductResponse(
+                        product.getCode(),
+                        product.getName(),
+                        product.getProductCategory(),
+                        product.getPricePerUnit()
+                        )
+                ).toList();
     }
 
     public ProductResponse findByBarcode(String barcode){
@@ -31,12 +53,9 @@ public class ProductService {
                 .map(product -> new ProductResponse(
                         product.getCode(),
                         product.getName(),
+                        product.getProductCategory(),
                         product.getPricePerUnit()
                 ))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produkt mit Barcode " + barcode + " nicht gefunden"));
-    }
-
-    public Optional<Product> findEntityByBarcode(String barcode){
-        return productRepository.findByCode(barcode);
     }
 }
