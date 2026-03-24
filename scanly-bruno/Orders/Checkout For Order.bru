@@ -1,0 +1,19 @@
+meta {
+  name: Checkout For Order
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{apiUrl}}/orders/:orderId/checkout
+  body: none
+  auth: inherit
+}
+
+params:path {
+  orderId: 
+}
+
+settings {
+  encodeUrl: true
+}

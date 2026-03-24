@@ -1,0 +1,15 @@
+meta {
+  name: Get All Orders
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{apiUrl}}/orders
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

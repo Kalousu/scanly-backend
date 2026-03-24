@@ -1,0 +1,20 @@
+meta {
+  name: Change Item From Order
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{apiUrl}}/:orderId/items/:itemId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  orderId: 
+  itemId: 
+}
+
+settings {
+  encodeUrl: true
+}
