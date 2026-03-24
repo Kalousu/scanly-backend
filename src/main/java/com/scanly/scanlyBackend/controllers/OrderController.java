@@ -63,6 +63,15 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @DeleteMapping("/{orderId}/items/{itemId}")
+    public ResponseEntity<Object> deleteItem(
+            @PathVariable Long orderId,
+            @PathVariable Long itemId
+    ){
+        orderService.deleteItem(orderId, itemId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/{orderId}/checkout")
     public ResponseEntity<Object> checkout(
             @PathVariable Long orderId,
