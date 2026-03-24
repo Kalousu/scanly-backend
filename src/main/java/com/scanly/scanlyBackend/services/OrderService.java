@@ -113,7 +113,23 @@ public class OrderService {
                 .get();
 
         BigDecimal newQuantity = item.getAmount().add(BigDecimal.valueOf(request.delta()));
-        item.setAmount(newQuantity);
+        if(newQuantity.compareTo(BigDecimal.ZERO) == 0){
+            deleteItem(orderId, itemId);
+        } else {
+            item.setAmount(newQuantity);
+            item.setTotalPrice(item.calculateTotalPrice(newQuantity, item.getTaxRate(), item.getUnitPrice()));
+        }
+        orderRepo.save(order);
+    }
+
+    public void deleteItem(Long orderId, Long itemId) {
+        Order order = orderRepo.findById(orderId).get();
+        List<OrderItem> items = order.getItems();
+        if(!items.removeIf(item -> item.getId().equals(itemId))){
+            throw new ProductNotFoundException("Product with id " + itemId + " not found");
+        };
+        BigDecimal orderTotal = order.getItems().stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        order.setTotalPrice(orderTotal);
         orderRepo.save(order);
     }
 }
