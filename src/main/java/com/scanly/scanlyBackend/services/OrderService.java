@@ -3,6 +3,7 @@ package com.scanly.scanlyBackend.services;
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
 import com.scanly.scanlyBackend.dtos.OrderItemResponse;
 import com.scanly.scanlyBackend.dtos.OrderResponse;
+import com.scanly.scanlyBackend.dtos.UpdateItemQuantityRequest;
 import com.scanly.scanlyBackend.exceptions.OrderNotFoundException;
 import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
@@ -24,6 +25,8 @@ public class OrderService {
     OrderRepository orderRepo;
     @Autowired
     ProductRepository productRepo;
+    @Autowired
+    private ProductService productService;
 
     public List<OrderResponse> getAll(){
         return orderRepo.findAll().stream()
@@ -99,6 +102,18 @@ public class OrderService {
         order.addItem(orderItem);
         BigDecimal orderTotal = order.getItems().stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setTotalPrice(orderTotal);
+        orderRepo.save(order);
+    }
+
+    public void updateItemQuantity(Long orderId, Long itemId, UpdateItemQuantityRequest request){
+        Order order = orderRepo.findById(orderId).get();
+        OrderItem item = order.getItems().stream()
+                .filter(item1 -> item1.getId().equals(itemId))
+                .findFirst()
+                .get();
+
+        BigDecimal newQuantity = item.getAmount().add(BigDecimal.valueOf(request.delta()));
+        item.setAmount(newQuantity);
         orderRepo.save(order);
     }
 }
