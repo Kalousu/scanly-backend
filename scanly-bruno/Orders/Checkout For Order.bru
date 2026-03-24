@@ -6,12 +6,18 @@ meta {
 
 get {
   url: {{apiUrl}}/orders/:orderId/checkout
-  body: none
+  body: json
   auth: inherit
 }
 
 params:path {
-  orderId: 
+  orderId: 1
+}
+
+body:json {
+  {
+    "paymentMethod": "Credit Card"
+  }
 }
 
 settings {

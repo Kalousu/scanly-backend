@@ -4,14 +4,21 @@ meta {
   seq: 4
 }
 
-get {
+post {
   url: {{apiUrl}}/orders/:orderId/items
-  body: none
+  body: json
   auth: inherit
 }
 
 params:path {
-  orderId: 
+  orderId: 1
+}
+
+body:json {
+  {
+    "code": "1234567890123",
+    "amount": 1
+  }
 }
 
 settings {

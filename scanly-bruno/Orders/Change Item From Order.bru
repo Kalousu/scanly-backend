@@ -5,14 +5,20 @@ meta {
 }
 
 patch {
-  url: {{apiUrl}}/:orderId/items/:itemId
-  body: none
+  url: {{apiUrl}}/orders/:orderId/items/:itemId
+  body: json
   auth: inherit
 }
 
 params:path {
-  orderId: 
-  itemId: 
+  orderId: 1
+  itemId: 1
+}
+
+body:json {
+  {
+    "delta": 1
+  }
 }
 
 settings {
