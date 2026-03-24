@@ -3,6 +3,7 @@ package com.scanly.scanlyBackend.controllers;
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
 import com.scanly.scanlyBackend.dtos.OrderResponse;
 import com.scanly.scanlyBackend.dtos.PaymentRequest;
+import com.scanly.scanlyBackend.dtos.UpdateItemQuantityRequest;
 import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.services.OrderService;
@@ -43,13 +44,23 @@ public class OrderController {
     public ResponseEntity<Object> addItem(
             @PathVariable Long orderId,
             @RequestBody AddOrderItemRequest item
-    ) {
+    ){
         try{
             orderService.addItem(orderId, item);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch(ProductNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PatchMapping("/{orderId}/items/{itemId}")
+    public ResponseEntity<Object> changeItem(
+            @PathVariable Long orderId,
+            @PathVariable Long itemId,
+            @RequestBody UpdateItemQuantityRequest request
+    ){
+        orderService.updateItemQuantity(orderId, itemId, request);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/{orderId}/checkout")
