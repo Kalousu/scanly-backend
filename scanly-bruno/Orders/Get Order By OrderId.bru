@@ -1,0 +1,19 @@
+meta {
+  name: Get Order By OrderId
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{apiUrl}}/orders/:orderId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  orderId: 1
+}
+
+settings {
+  encodeUrl: true
+}

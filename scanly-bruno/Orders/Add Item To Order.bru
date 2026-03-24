@@ -1,0 +1,19 @@
+meta {
+  name: Add Item To Order
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{apiUrl}}/orders/:orderId/items
+  body: none
+  auth: inherit
+}
+
+params:path {
+  orderId: 
+}
+
+settings {
+  encodeUrl: true
+}

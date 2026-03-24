@@ -1,0 +1,20 @@
+meta {
+  name: Delete Item Frm Order
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{apiUrl}}/orders/:orderId/items/:itemId
+  body: none
+  auth: inherit
+}
+
+params:path {
+  orderId: 
+  itemId: 
+}
+
+settings {
+  encodeUrl: true
+}

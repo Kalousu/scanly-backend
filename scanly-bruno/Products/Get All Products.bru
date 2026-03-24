@@ -1,0 +1,15 @@
+meta {
+  name: Get All Products
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{apiUrl}}/products
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
