@@ -1,18 +1,17 @@
 meta {
-  name: Delete Item From Order
+  name: Delete Order
   type: http
-  seq: 8
+  seq: 7
 }
 
 delete {
-  url: {{apiUrl}}/orders/:orderId/items/:itemId
+  url: {{apiUrl}}/orders/:orderId
   body: none
   auth: inherit
 }
 
 params:path {
   orderId: 1
-  itemId: 1
 }
 
 settings {
