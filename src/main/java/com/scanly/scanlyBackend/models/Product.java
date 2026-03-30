@@ -39,4 +39,13 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     private ProductCategory productCategory;
+
+    public Product(String code, String name, BigDecimal pricePerUnit, BigDecimal taxRate, PricingType pricingType, ProductCategory productCategory) {
+        this.code = code;
+        this.name = name;
+        this.pricePerUnit = pricePerUnit;
+        this.taxRate = taxRate;
+        this.pricingType = pricingType;
+        this.productCategory = productCategory;
+    }
 }

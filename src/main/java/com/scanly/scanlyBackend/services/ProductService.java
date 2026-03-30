@@ -1,7 +1,9 @@
 package com.scanly.scanlyBackend.services;
 
+import com.scanly.scanlyBackend.dtos.AddProductRequest;
 import com.scanly.scanlyBackend.dtos.ProductResponse;
 import com.scanly.scanlyBackend.models.Product;
+import com.scanly.scanlyBackend.models.enums.PricingType;
 import com.scanly.scanlyBackend.models.enums.ProductCategory;
 import com.scanly.scanlyBackend.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,5 +62,17 @@ public class ProductService {
                         product.getTaxRate()
                 ))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produkt mit Barcode " + barcode + " nicht gefunden"));
+    }
+
+    public void addProduct(AddProductRequest request){
+        Product product = new Product(
+                request.code(),
+                request.name(),
+                request.price(),
+                request.taxRate(),
+                PricingType.WEIGHT,
+                request.category()
+        );
+        productRepository.save(product);
     }
 }
