@@ -139,4 +139,9 @@ public class OrderService {
         order.setTotalPrice(orderTotal);
         orderRepo.save(order);
     }
+
+    public void deleteOrder(Long orderId){
+        Order order = orderRepo.findById(orderId).get();
+        orderRepo.delete(order);
+    }
 }
