@@ -95,7 +95,7 @@ public class OrderService {
         Optional<OrderItem> existingItem = order.getItems().stream()
                 .filter(item1 -> item1.getProduct().getCode().equals(product.getCode())).findFirst();
         if(existingItem.isPresent()){
-            updateItemQuantity(orderId, existingItem.get().getId(), new UpdateItemQuantityRequest(1));
+            updateItemQuantity(orderId, existingItem.get().getId(), new UpdateItemQuantityRequest(item.amount()));
         } else {
             OrderItem orderItem = new OrderItem(
                     order,
