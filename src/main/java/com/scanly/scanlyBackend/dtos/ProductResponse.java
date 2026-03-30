@@ -8,5 +8,6 @@ public record ProductResponse(
         String code,
         String name,
         ProductCategory category,
-        BigDecimal price
+        BigDecimal price,
+        BigDecimal taxRate
 ) {}

@@ -23,7 +23,8 @@ public class ProductService {
                         product.getCode(),
                         product.getName(),
                         product.getProductCategory(),
-                        product.getPricePerUnit()
+                        product.getPricePerUnit(),
+                        product.getTaxRate()
                 ))
                 .toList();
     }
@@ -43,7 +44,8 @@ public class ProductService {
                         product.getCode(),
                         product.getName(),
                         product.getProductCategory(),
-                        product.getPricePerUnit()
+                        product.getPricePerUnit(),
+                        product.getTaxRate()
                         )
                 ).toList();
     }
@@ -54,7 +56,8 @@ public class ProductService {
                         product.getCode(),
                         product.getName(),
                         product.getProductCategory(),
-                        product.getPricePerUnit()
+                        product.getPricePerUnit(),
+                        product.getTaxRate()
                 ))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produkt mit Barcode " + barcode + " nicht gefunden"));
     }
