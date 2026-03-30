@@ -100,7 +100,7 @@ public class OrderService {
             OrderItem orderItem = new OrderItem(
                     order,
                     product,
-                    new BigDecimal(item.amount()),
+                    item.amount(),
                     product.getPricePerUnit(),
                     product.getTaxRate()
             );
@@ -119,7 +119,7 @@ public class OrderService {
                 .findFirst()
                 .get();
 
-        BigDecimal newQuantity = item.getAmount().add(BigDecimal.valueOf(request.delta()));
+        BigDecimal newQuantity = item.getAmount().add(request.delta());
         if(newQuantity.compareTo(BigDecimal.ZERO) == 0){
             deleteItem(orderId, itemId);
         } else {
