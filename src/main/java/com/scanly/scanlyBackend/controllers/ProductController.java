@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
 import com.scanly.scanlyBackend.dtos.AddProductRequest;
+import com.scanly.scanlyBackend.dtos.ChangeProductRequest;
 import com.scanly.scanlyBackend.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,8 +40,25 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<Object> addProduct(
             @RequestBody AddProductRequest addProductRequest
-            ){
+    ){
         productService.addProduct(addProductRequest);
         return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/barcode/{barcode}")
+    public ResponseEntity<Object> updateProduct(
+            @PathVariable String barcode,
+            @RequestBody ChangeProductRequest changeProductRequest
+    ){
+        productService.changeProduct(barcode, changeProductRequest);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/barcode/{barcode}")
+    public ResponseEntity<Object> deleteProduct(
+            @PathVariable String barcode
+    ){
+        productService.deleteProduct(barcode);
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

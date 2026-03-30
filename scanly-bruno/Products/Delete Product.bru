@@ -1,17 +1,17 @@
 meta {
-  name: Get Product By Barcode
+  name: Delete Product
   type: http
-  seq: 5
+  seq: 6
 }
 
-get {
+delete {
   url: {{apiUrl}}/products/barcode/:barcode
   body: none
   auth: inherit
 }
 
 params:path {
-  barcode: 1234567890123
+  barcode: 
 }
 
 settings {

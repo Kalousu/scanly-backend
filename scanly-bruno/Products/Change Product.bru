@@ -1,0 +1,29 @@
+meta {
+  name: Change Product
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{apiUrl}}/products/barcode/:barcode
+  body: json
+  auth: inherit
+}
+
+params:path {
+  barcode: 1234567890123
+}
+
+body:json {
+   {
+     "name": "Monster White",
+     "code": 1234567890123,
+    "price": 2.10,
+    "taxRate": 1.19,
+     "productCategory": "OTHERS"
+    }
+}
+
+settings {
+  encodeUrl: true
+}

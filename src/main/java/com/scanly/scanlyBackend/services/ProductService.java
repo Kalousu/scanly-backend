@@ -1,7 +1,9 @@
 package com.scanly.scanlyBackend.services;
 
 import com.scanly.scanlyBackend.dtos.AddProductRequest;
+import com.scanly.scanlyBackend.dtos.ChangeProductRequest;
 import com.scanly.scanlyBackend.dtos.ProductResponse;
+import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Product;
 import com.scanly.scanlyBackend.models.enums.PricingType;
 import com.scanly.scanlyBackend.models.enums.ProductCategory;
@@ -74,5 +76,32 @@ public class ProductService {
                 request.category()
         );
         productRepository.save(product);
+    }
+
+    public void changeProduct(String code, ChangeProductRequest request){
+        Optional<Product> productOptional = productRepository.findByCode(code);
+        if(productOptional.isPresent()){
+            Product product = productOptional.get();
+            product.setName(request.name());
+            product.setCode(request.code());
+            product.setPricePerUnit(request.price());
+            product.setTaxRate(request.taxRate());
+            product.setPricingType(PricingType.UNIT);
+            product.setProductCategory(request.productCategory());
+            productRepository.save(productOptional.get());
+        } else {
+            throw new ProductNotFoundException("Product with code " + code + " not found");
+        }
+    }
+
+    public void deleteProduct(String code){
+        Optional<Product> productOptional = productRepository.findByCode(code);
+        if(productOptional.isPresent()){
+            Product product = productOptional.get();
+            productRepository.delete(product);
+        }else {
+            throw new ProductNotFoundException("Product with code " + code + " not found");
+        }
+
     }
 }
