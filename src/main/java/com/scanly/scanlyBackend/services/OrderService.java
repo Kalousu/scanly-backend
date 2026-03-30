@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OrderService {
@@ -91,18 +92,24 @@ public class OrderService {
     public void addItem(Long orderId, AddOrderItemRequest item){
         Order order = orderRepo.findById(orderId).get();
         Product product = productRepo.findByCode(item.code()).get();
-        OrderItem orderItem = new OrderItem(
-                order,
-                product,
-                new BigDecimal(item.amount()),
-                product.getPricePerUnit(),
-                product.getTaxRate()
-        );
-        orderItem.setTotalPrice(orderItem.calculateTotalPrice(orderItem.getAmount(), orderItem.getTaxRate(), orderItem.getUnitPrice()));
-        order.addItem(orderItem);
-        BigDecimal orderTotal = order.getItems().stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-        order.setTotalPrice(orderTotal);
-        orderRepo.save(order);
+        Optional<OrderItem> existingItem = order.getItems().stream()
+                .filter(item1 -> item1.getProduct().getCode().equals(product.getCode())).findFirst();
+        if(existingItem.isPresent()){
+            updateItemQuantity(orderId, existingItem.get().getId(), new UpdateItemQuantityRequest(1));
+        } else {
+            OrderItem orderItem = new OrderItem(
+                    order,
+                    product,
+                    new BigDecimal(item.amount()),
+                    product.getPricePerUnit(),
+                    product.getTaxRate()
+            );
+            orderItem.setTotalPrice(orderItem.calculateTotalPrice(orderItem.getAmount(), orderItem.getTaxRate(), orderItem.getUnitPrice()));
+            order.addItem(orderItem);
+            BigDecimal orderTotal = order.getItems().stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+            order.setTotalPrice(orderTotal);
+            orderRepo.save(order);
+        }
     }
 
     public void updateItemQuantity(Long orderId, Long itemId, UpdateItemQuantityRequest request){
