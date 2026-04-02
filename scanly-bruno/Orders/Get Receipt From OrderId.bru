@@ -1,18 +1,17 @@
 meta {
-  name: Delete Item From Order
+  name: Get Receipt From OrderId
   type: http
-  seq: 9
+  seq: 4
 }
 
-delete {
-  url: {{apiUrl}}/orders/:orderId/items/:itemId
+get {
+  url: {{apiUrl}}/orders/:orderId/receipt
   body: none
   auth: inherit
 }
 
 params:path {
   orderId: 1
-  itemId: 1
 }
 
 settings {

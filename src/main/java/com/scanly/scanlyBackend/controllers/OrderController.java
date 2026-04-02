@@ -4,11 +4,13 @@ import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
 import com.scanly.scanlyBackend.dtos.OrderResponse;
 import com.scanly.scanlyBackend.dtos.PaymentRequest;
 import com.scanly.scanlyBackend.dtos.UpdateItemQuantityRequest;
+import com.scanly.scanlyBackend.dtos.receipts.ReceiptResponse;
 import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.services.OrderService;
 import com.scanly.scanlyBackend.services.PaymentService;
 import com.scanly.scanlyBackend.services.ProductService;
+import com.scanly.scanlyBackend.services.ReceiptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,9 @@ public class OrderController {
     @Autowired
     private PaymentService paymentService;
 
+    @Autowired
+    private ReceiptService receiptService;
+
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
         return new ResponseEntity<>(orderService.getAll(), HttpStatus.OK);
@@ -33,6 +38,11 @@ public class OrderController {
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderResponse> getOrderById(@PathVariable long orderId) {
         return new ResponseEntity<>(orderService.getById(orderId), HttpStatus.OK);
+    }
+
+    @GetMapping("/{orderId}/receipt")
+    public ResponseEntity<ReceiptResponse> getOrderReceiptById(@PathVariable long orderId) {
+        return new ResponseEntity<ReceiptResponse>(receiptService.getOrderReceiptById(orderId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{orderId}")
