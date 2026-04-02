@@ -37,9 +37,8 @@ public class ReceiptMapper {
     }
 
     public ReceiptItemResponse toReceiptItemResponse(OrderItem orderItem) {
-        BigDecimal unitPriceGross = orderItem.getUnitPrice()
-                .multiply(orderItem.getTaxRate().add(BigDecimal.ONE))
-                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal unitPriceGross = orderItem.getTotalPrice()
+                .divide(orderItem.getAmount(), 2, RoundingMode.HALF_UP);
 
         return new ReceiptItemResponse(
                 orderItem.getProduct().getName(),
