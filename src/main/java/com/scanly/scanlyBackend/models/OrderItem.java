@@ -39,6 +39,6 @@ public class OrderItem {
     }
 
     public BigDecimal calculateTotalPrice(BigDecimal amount, BigDecimal taxRate, BigDecimal unitPrice) {
-        return amount.multiply((unitPrice.multiply(taxRate)));
+        return amount.multiply((unitPrice.multiply(taxRate.add(BigDecimal.ONE))));
     }
 }
