@@ -1,0 +1,25 @@
+meta {
+  name: Create Coupon
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/coupons
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "code": "SUMMER20",
+    "label": "20% Sommer Rabatt",
+    "type": "PERCENTAGE",
+    "value": 20,
+    "minOrderValue": 10,
+    "active": true,
+    "validFrom": null,
+    "validUntil": null,
+    "maxUsages": null
+  }
+}

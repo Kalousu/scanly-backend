@@ -35,6 +35,11 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @ManyToOne
+    private Coupon appliedCoupon;
+
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+
     public void addItem(OrderItem item){
         items.add(item);
     }

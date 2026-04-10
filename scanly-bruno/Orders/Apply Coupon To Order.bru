@@ -1,0 +1,17 @@
+meta {
+  name: Apply Coupon To Order
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/api/orders/1/coupon
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "code": "SCANLY10"
+  }
+}

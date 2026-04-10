@@ -1,0 +1,11 @@
+meta {
+  name: Remove Coupon From Order
+  type: http
+  seq: 11
+}
+
+delete {
+  url: {{baseUrl}}/api/orders/1/coupon
+  body: none
+  auth: none
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Validate Coupon
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/coupons/validate/SCANLY10?subtotal=50
+  body: none
+  auth: none
+}
+
+params:query {
+  subtotal: 50
+}
