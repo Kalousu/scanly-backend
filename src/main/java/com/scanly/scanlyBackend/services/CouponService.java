@@ -95,6 +95,26 @@ public class CouponService {
         couponRepository.deleteById(id);
     }
 
+    @Transactional
+    public CouponResponse deactivateCoupon(Long id) {
+        Coupon coupon = couponRepository.findById(id)
+                .orElseThrow(() -> new CouponNotFoundException("Coupon with id " + id + " not found"));
+        
+        coupon.setActive(false);
+        Coupon updatedCoupon = couponRepository.save(coupon);
+        return mapToResponse(updatedCoupon);
+    }
+
+    @Transactional
+    public CouponResponse activateCoupon(Long id) {
+        Coupon coupon = couponRepository.findById(id)
+                .orElseThrow(() -> new CouponNotFoundException("Coupon with id " + id + " not found"));
+        
+        coupon.setActive(true);
+        Coupon updatedCoupon = couponRepository.save(coupon);
+        return mapToResponse(updatedCoupon);
+    }
+
     public CouponValidationResponse validateCoupon(String code, BigDecimal subtotal) {
         String normalizedCode = code.trim().toUpperCase();
 
