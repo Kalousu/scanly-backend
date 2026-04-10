@@ -1,10 +1,13 @@
 package com.scanly.scanlyBackend.config;
 
+import com.scanly.scanlyBackend.models.Coupon;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.models.Product;
+import com.scanly.scanlyBackend.models.enums.CouponType;
 import com.scanly.scanlyBackend.models.enums.OrderStatus;
 import com.scanly.scanlyBackend.models.enums.PricingType;
 import com.scanly.scanlyBackend.models.enums.ProductCategory;
+import com.scanly.scanlyBackend.repository.CouponRepository;
 import com.scanly.scanlyBackend.repository.OrderRepository;
 import com.scanly.scanlyBackend.repository.ProductRepository;
 
@@ -19,7 +22,7 @@ import java.math.BigDecimal;
 public class DataSeeder {
     
     @Bean
-    CommandLineRunner initDatabase(ProductRepository productRepository, OrderRepository orderRepository) {
+    CommandLineRunner initDatabase(ProductRepository productRepository, OrderRepository orderRepository, CouponRepository couponRepository) {
         return args -> {
             // Add sample products to the database, if empty
             if(productRepository.count() == 0) {
@@ -32,6 +35,33 @@ public class DataSeeder {
                 Order order = new Order();
                 order.setStatus(OrderStatus.OPEN);
                 orderRepository.save(order);
+            }
+
+            // Add sample coupons to the database, if empty
+            if(couponRepository.count() == 0) {
+                couponRepository.save(new Coupon(
+                    "SCANLY10",
+                    "10% Rabatt",
+                    CouponType.PERCENTAGE,
+                    BigDecimal.valueOf(10),
+                    BigDecimal.ZERO
+                ));
+                
+                couponRepository.save(new Coupon(
+                    "SAVE5",
+                    "5 EUR Rabatt ab 20 EUR",
+                    CouponType.FIXED,
+                    BigDecimal.valueOf(5),
+                    BigDecimal.valueOf(20)
+                ));
+                
+                couponRepository.save(new Coupon(
+                    "WELCOME15",
+                    "15% Rabatt ab 30 EUR",
+                    CouponType.PERCENTAGE,
+                    BigDecimal.valueOf(15),
+                    BigDecimal.valueOf(30)
+                ));
             }
         };
     }

@@ -1,10 +1,13 @@
 package com.scanly.scanlyBackend.controllers;
 
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
+import com.scanly.scanlyBackend.dtos.ApplyCouponRequest;
 import com.scanly.scanlyBackend.dtos.OrderResponse;
 import com.scanly.scanlyBackend.dtos.PaymentRequest;
 import com.scanly.scanlyBackend.dtos.UpdateItemQuantityRequest;
 import com.scanly.scanlyBackend.dtos.receipts.ReceiptResponse;
+import com.scanly.scanlyBackend.exceptions.CouponNotFoundException;
+import com.scanly.scanlyBackend.exceptions.InvalidCouponException;
 import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.services.OrderService;
@@ -99,5 +102,26 @@ public class OrderController {
         } catch(Exception e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/{orderId}/coupon")
+    public ResponseEntity<Object> applyCoupon(
+            @PathVariable Long orderId,
+            @RequestBody ApplyCouponRequest request
+    ){
+        try{
+            orderService.applyCoupon(orderId, request.code());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch(CouponNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch(InvalidCouponException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/{orderId}/coupon")
+    public ResponseEntity<Object> removeCoupon(@PathVariable Long orderId){
+        orderService.removeCoupon(orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
