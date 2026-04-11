@@ -42,7 +42,7 @@ public class ProductController {
             @RequestBody AddProductRequest addProductRequest
     ){
         productService.addProduct(addProductRequest);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PatchMapping("/barcode/{barcode}")
@@ -51,7 +51,7 @@ public class ProductController {
             @RequestBody ChangeProductRequest changeProductRequest
     ){
         productService.changeProduct(barcode, changeProductRequest);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/barcode/{barcode}")
@@ -59,6 +59,6 @@ public class ProductController {
             @PathVariable String barcode
     ){
         productService.deleteProduct(barcode);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

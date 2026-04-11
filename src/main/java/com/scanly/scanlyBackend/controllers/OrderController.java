@@ -40,7 +40,7 @@ public class OrderController {
 
     @GetMapping("/{orderId}/receipt")
     public ResponseEntity<ReceiptResponse> getOrderReceiptById(@PathVariable long orderId) {
-        return new ResponseEntity<ReceiptResponse>(receiptService.getOrderReceiptById(orderId), HttpStatus.OK);
+        return new ResponseEntity<>(receiptService.getOrderReceiptById(orderId), HttpStatus.OK);
     }
 
     @DeleteMapping("/{orderId}")

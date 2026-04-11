@@ -5,6 +5,7 @@ import com.scanly.scanlyBackend.dtos.CouponResponse;
 import com.scanly.scanlyBackend.dtos.CouponValidationResponse;
 import com.scanly.scanlyBackend.exceptions.CouponNotFoundException;
 import com.scanly.scanlyBackend.exceptions.InvalidCouponException;
+import com.scanly.scanlyBackend.mappers.CouponMapper;
 import com.scanly.scanlyBackend.models.Coupon;
 import com.scanly.scanlyBackend.models.enums.CouponType;
 import com.scanly.scanlyBackend.repository.CouponRepository;
@@ -22,22 +23,25 @@ public class CouponService {
     @Autowired
     private CouponRepository couponRepository;
 
+    @Autowired
+    private CouponMapper couponMapper;
+
     public List<CouponResponse> getAllCoupons() {
         return couponRepository.findAll().stream()
-                .map(this::mapToResponse)
+                .map(couponMapper::mapToResponse)
                 .toList();
     }
 
     public CouponResponse getCouponById(Long id) {
         Coupon coupon = couponRepository.findById(id)
                 .orElseThrow(() -> new CouponNotFoundException("Coupon with id " + id + " not found"));
-        return mapToResponse(coupon);
+        return couponMapper.mapToResponse(coupon);
     }
 
     public CouponResponse getCouponByCode(String code) {
         Coupon coupon = couponRepository.findByCodeIgnoreCase(code.trim())
                 .orElseThrow(() -> new CouponNotFoundException("Coupon with code " + code + " not found"));
-        return mapToResponse(coupon);
+        return couponMapper.mapToResponse(coupon);
     }
 
     @Transactional
@@ -59,7 +63,7 @@ public class CouponService {
         coupon.setCurrentUsages(0);
 
         Coupon savedCoupon = couponRepository.save(coupon);
-        return mapToResponse(savedCoupon);
+        return couponMapper.mapToResponse(savedCoupon);
     }
 
     @Transactional
@@ -67,7 +71,6 @@ public class CouponService {
         Coupon coupon = couponRepository.findById(id)
                 .orElseThrow(() -> new CouponNotFoundException("Coupon with id " + id + " not found"));
 
-        // Check if code is being changed and if new code already exists
         if (!coupon.getCode().equalsIgnoreCase(request.code()) &&
                 couponRepository.existsByCodeIgnoreCase(request.code())) {
             throw new InvalidCouponException("Coupon with code " + request.code() + " already exists");
@@ -84,7 +87,7 @@ public class CouponService {
         coupon.setMaxUsages(request.maxUsages());
 
         Coupon updatedCoupon = couponRepository.save(coupon);
-        return mapToResponse(updatedCoupon);
+        return couponMapper.mapToResponse(updatedCoupon);
     }
 
     @Transactional
@@ -102,7 +105,7 @@ public class CouponService {
         
         coupon.setActive(false);
         Coupon updatedCoupon = couponRepository.save(coupon);
-        return mapToResponse(updatedCoupon);
+        return couponMapper.mapToResponse(updatedCoupon);
     }
 
     @Transactional
@@ -112,7 +115,7 @@ public class CouponService {
         
         coupon.setActive(true);
         Coupon updatedCoupon = couponRepository.save(coupon);
-        return mapToResponse(updatedCoupon);
+        return couponMapper.mapToResponse(updatedCoupon);
     }
 
     public CouponValidationResponse validateCoupon(String code, BigDecimal subtotal) {
@@ -174,7 +177,7 @@ public class CouponService {
                 true,
                 coupon.getLabel() + " aktiviert.",
                 normalizedCode,
-                mapToResponse(coupon),
+                couponMapper.mapToResponse(coupon),
                 discount,
                 totalAfterDiscount
         );
@@ -203,22 +206,5 @@ public class CouponService {
         }
 
         return discount.setScale(2, RoundingMode.HALF_UP);
-    }
-
-    private CouponResponse mapToResponse(Coupon coupon) {
-        return new CouponResponse(
-                coupon.getId(),
-                coupon.getCode(),
-                coupon.getLabel(),
-                coupon.getType(),
-                coupon.getValue(),
-                coupon.getMinOrderValue(),
-                coupon.getActive(),
-                coupon.getValidFrom(),
-                coupon.getValidUntil(),
-                coupon.getMaxUsages(),
-                coupon.getCurrentUsages(),
-                coupon.getCreatedAt()
-        );
     }
 }
