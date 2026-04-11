@@ -24,7 +24,6 @@ public class DataSeeder {
     @Bean
     CommandLineRunner initDatabase(ProductRepository productRepository, OrderRepository orderRepository, CouponRepository couponRepository) {
         return args -> {
-            // Add sample products to the database, if empty
             if(productRepository.count() == 0) {
                 productRepository.save(new Product(null, "1234567890123", "Monster White", BigDecimal.valueOf(2.49), BigDecimal.valueOf(0.07), PricingType.UNIT, ProductCategory.OTHERS));
                 productRepository.save(new Product(null, "9876543210987", "Monster not White", BigDecimal.valueOf(99), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
@@ -37,7 +36,6 @@ public class DataSeeder {
                 orderRepository.save(order);
             }
 
-            // Add sample coupons to the database, if empty
             if(couponRepository.count() == 0) {
                 couponRepository.save(new Coupon(
                     "SCANLY10",
