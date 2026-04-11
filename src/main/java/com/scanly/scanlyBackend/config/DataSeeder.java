@@ -25,9 +25,9 @@ public class DataSeeder {
     CommandLineRunner initDatabase(ProductRepository productRepository, OrderRepository orderRepository, CouponRepository couponRepository) {
         return args -> {
             if(productRepository.count() == 0) {
-                productRepository.save(new Product(null, "1234567890123", "Monster White", BigDecimal.valueOf(2.49), BigDecimal.valueOf(0.07), PricingType.UNIT, ProductCategory.OTHERS));
-                productRepository.save(new Product(null, "9876543210987", "Monster not White", BigDecimal.valueOf(99), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
-                productRepository.save(new Product(null, "5555555555555", "Schoko Crossong", BigDecimal.valueOf(0.79), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("1234567890123", "Monster White", BigDecimal.valueOf(2.49), BigDecimal.valueOf(0.07), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("9876543210987", "Monster not White", BigDecimal.valueOf(99), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("5555555555555", "Schoko Crossong", BigDecimal.valueOf(0.79), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
             }
 
             if(orderRepository.count() == 0){
@@ -37,29 +37,35 @@ public class DataSeeder {
             }
 
             if(couponRepository.count() == 0) {
-                couponRepository.save(new Coupon(
+                Coupon c1 = new Coupon(
                     "SCANLY10",
                     "10% Rabatt",
                     CouponType.PERCENTAGE,
                     BigDecimal.valueOf(10),
                     BigDecimal.ZERO
-                ));
+                );
+                c1.setActive(true);
+                couponRepository.save(c1);
                 
-                couponRepository.save(new Coupon(
+                Coupon c2 = new Coupon(
                     "SAVE5",
                     "5 EUR Rabatt ab 20 EUR",
                     CouponType.FIXED,
                     BigDecimal.valueOf(5),
                     BigDecimal.valueOf(20)
-                ));
+                );
+                c2.setActive(true);
+                couponRepository.save(c2);
                 
-                couponRepository.save(new Coupon(
+                Coupon c3 = new Coupon(
                     "WELCOME15",
                     "15% Rabatt ab 30 EUR",
                     CouponType.PERCENTAGE,
                     BigDecimal.valueOf(15),
                     BigDecimal.valueOf(30)
-                ));
+                );
+                c3.setActive(true);
+                couponRepository.save(c3);
             }
         };
     }

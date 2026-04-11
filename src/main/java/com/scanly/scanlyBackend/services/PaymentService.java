@@ -2,7 +2,6 @@ package com.scanly.scanlyBackend.services;
 
 import com.scanly.scanlyBackend.dtos.PaymentRequest;
 import com.scanly.scanlyBackend.dtos.PaymentResponse;
-import com.scanly.scanlyBackend.dtos.ProductResponse;
 import com.scanly.scanlyBackend.exceptions.OrderNotFoundException;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.models.Payment;
@@ -16,7 +15,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
 

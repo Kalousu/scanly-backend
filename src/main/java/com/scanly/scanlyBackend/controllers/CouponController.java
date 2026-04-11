@@ -3,8 +3,6 @@ package com.scanly.scanlyBackend.controllers;
 import com.scanly.scanlyBackend.dtos.CouponRequest;
 import com.scanly.scanlyBackend.dtos.CouponResponse;
 import com.scanly.scanlyBackend.dtos.CouponValidationResponse;
-import com.scanly.scanlyBackend.exceptions.CouponNotFoundException;
-import com.scanly.scanlyBackend.exceptions.InvalidCouponException;
 import com.scanly.scanlyBackend.services.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

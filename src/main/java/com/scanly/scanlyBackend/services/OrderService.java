@@ -1,7 +1,6 @@
 package com.scanly.scanlyBackend.services;
 
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
-import com.scanly.scanlyBackend.dtos.OrderItemResponse;
 import com.scanly.scanlyBackend.dtos.OrderResponse;
 import com.scanly.scanlyBackend.dtos.UpdateItemQuantityRequest;
 import com.scanly.scanlyBackend.exceptions.OrderNotFoundException;

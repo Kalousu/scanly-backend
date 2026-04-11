@@ -1,7 +1,6 @@
 package com.scanly.scanlyBackend.controllers;
 
 import com.scanly.scanlyBackend.dtos.PaymentResponse;
-import com.scanly.scanlyBackend.models.Payment;
 import com.scanly.scanlyBackend.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
