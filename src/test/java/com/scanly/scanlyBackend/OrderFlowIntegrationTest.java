@@ -3,14 +3,12 @@ package com.scanly.scanlyBackend;
 import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
 import com.scanly.scanlyBackend.dtos.ApplyCouponRequest;
 import com.scanly.scanlyBackend.dtos.OrderResponse;
-import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.repository.OrderRepository;
 import com.scanly.scanlyBackend.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 

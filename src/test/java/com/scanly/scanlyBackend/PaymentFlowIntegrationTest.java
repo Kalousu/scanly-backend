@@ -2,7 +2,6 @@ package com.scanly.scanlyBackend;
 
 import com.scanly.scanlyBackend.dtos.OrderResponse;
 import com.scanly.scanlyBackend.dtos.PaymentRequest;
-import com.scanly.scanlyBackend.models.enums.Currency;
 import com.scanly.scanlyBackend.models.enums.OrderStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;

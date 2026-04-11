@@ -2,7 +2,6 @@ package com.scanly.scanlyBackend.controllers;
 
 import java.util.List;
 
-import com.scanly.scanlyBackend.dtos.AddOrderItemRequest;
 import com.scanly.scanlyBackend.dtos.AddProductRequest;
 import com.scanly.scanlyBackend.dtos.ChangeProductRequest;
 import com.scanly.scanlyBackend.services.ProductService;
@@ -10,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.scanly.scanlyBackend.repository.ProductRepository;
 import com.scanly.scanlyBackend.dtos.ProductResponse;
 
 @RestController

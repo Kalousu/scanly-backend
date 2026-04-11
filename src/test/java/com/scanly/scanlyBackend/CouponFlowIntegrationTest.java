@@ -1,7 +1,6 @@
 package com.scanly.scanlyBackend;
 
 import com.scanly.scanlyBackend.dtos.CouponRequest;
-import com.scanly.scanlyBackend.dtos.CouponResponse;
 import com.scanly.scanlyBackend.dtos.CouponValidationResponse;
 import com.scanly.scanlyBackend.models.enums.CouponType;
 import org.junit.jupiter.api.Test;
