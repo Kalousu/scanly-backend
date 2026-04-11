@@ -64,12 +64,8 @@ public class OrderController {
             @PathVariable Long orderId,
             @RequestBody AddOrderItemRequest item
     ){
-        try{
             orderService.addItem(orderId, item);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch(ProductNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
     }
 
     @PatchMapping("/{orderId}/items/{itemId}")
@@ -96,12 +92,8 @@ public class OrderController {
             @PathVariable Long orderId,
             @RequestBody PaymentRequest paymentRequest
     ){
-        try{
             paymentService.processPayment(orderId, paymentRequest);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
-        } catch(Exception e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
     }
 
     @PostMapping("/{orderId}/coupon")
@@ -109,14 +101,8 @@ public class OrderController {
             @PathVariable Long orderId,
             @RequestBody ApplyCouponRequest request
     ){
-        try{
             orderService.applyCoupon(orderId, request.code());
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch(CouponNotFoundException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch(InvalidCouponException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
     }
 
     @DeleteMapping("/{orderId}/coupon")
