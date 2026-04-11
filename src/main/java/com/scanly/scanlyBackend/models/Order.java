@@ -29,7 +29,7 @@ public class Order {
     private Long orderId;
     private BigDecimal totalPrice;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> items;
+    private List<OrderItem> items = new java.util.ArrayList<>();
     @CreationTimestamp
     private Instant creationDate;
     @Enumerated(EnumType.STRING)

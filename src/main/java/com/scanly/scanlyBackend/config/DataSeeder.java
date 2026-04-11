@@ -39,29 +39,35 @@ public class DataSeeder {
 
             // Add sample coupons to the database, if empty
             if(couponRepository.count() == 0) {
-                couponRepository.save(new Coupon(
+                Coupon c1 = new Coupon(
                     "SCANLY10",
                     "10% Rabatt",
                     CouponType.PERCENTAGE,
                     BigDecimal.valueOf(10),
                     BigDecimal.ZERO
-                ));
+                );
+                c1.setActive(true);
+                couponRepository.save(c1);
                 
-                couponRepository.save(new Coupon(
+                Coupon c2 = new Coupon(
                     "SAVE5",
                     "5 EUR Rabatt ab 20 EUR",
                     CouponType.FIXED,
                     BigDecimal.valueOf(5),
                     BigDecimal.valueOf(20)
-                ));
+                );
+                c2.setActive(true);
+                couponRepository.save(c2);
                 
-                couponRepository.save(new Coupon(
+                Coupon c3 = new Coupon(
                     "WELCOME15",
                     "15% Rabatt ab 30 EUR",
                     CouponType.PERCENTAGE,
                     BigDecimal.valueOf(15),
                     BigDecimal.valueOf(30)
-                ));
+                );
+                c3.setActive(true);
+                couponRepository.save(c3);
             }
         };
     }

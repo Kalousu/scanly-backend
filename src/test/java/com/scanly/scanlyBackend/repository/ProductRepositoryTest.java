@@ -19,7 +19,9 @@ class ProductRepositoryTest extends AbstractIntegrationTest {
         Product apfel = new Product();
         apfel.setName("Bio Apfel");
         apfel.setCode("123456789");
-        apfel.setPricePerUnit(new BigDecimal(1.99));
+        apfel.setPricePerUnit(new BigDecimal("1.99"));
+        apfel.setTaxRate(new BigDecimal("0.07"));
+        apfel.setPricingType(com.scanly.scanlyBackend.models.enums.PricingType.UNIT);
 
         productRepository.save(apfel);
         Product foundProduct = productRepository.findByCode("123456789").orElse(null);
