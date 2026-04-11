@@ -1,6 +1,6 @@
 package com.scanly.scanlyBackend.services;
 
-import com.scanly.scanlyBackend.dtos.receipts.ReceiptResponse;
+import com.scanly.scanlyBackend.dtos.ReceiptResponse;
 import com.scanly.scanlyBackend.exceptions.OrderNotFoundException;
 import com.scanly.scanlyBackend.mappers.ReceiptMapper;
 import com.scanly.scanlyBackend.models.Order;

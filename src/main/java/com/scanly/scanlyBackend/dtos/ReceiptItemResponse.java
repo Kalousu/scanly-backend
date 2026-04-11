@@ -1,4 +1,4 @@
-package com.scanly.scanlyBackend.dtos.receipts;
+package com.scanly.scanlyBackend.dtos;
 
 import java.math.BigDecimal;
 

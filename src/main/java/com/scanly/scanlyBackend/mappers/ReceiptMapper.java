@@ -1,15 +1,14 @@
 package com.scanly.scanlyBackend.mappers;
 
-import com.scanly.scanlyBackend.dtos.receipts.ReceiptItemResponse;
-import com.scanly.scanlyBackend.dtos.receipts.ReceiptResponse;
-import com.scanly.scanlyBackend.dtos.receipts.ReceiptTaxGroupResponse;
+import com.scanly.scanlyBackend.dtos.ReceiptItemResponse;
+import com.scanly.scanlyBackend.dtos.ReceiptResponse;
+import com.scanly.scanlyBackend.dtos.ReceiptTaxGroupResponse;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.models.OrderItem;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
