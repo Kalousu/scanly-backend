@@ -6,6 +6,7 @@ import com.scanly.scanlyBackend.dtos.OrderResponse;
 import com.scanly.scanlyBackend.dtos.UpdateItemQuantityRequest;
 import com.scanly.scanlyBackend.exceptions.OrderNotFoundException;
 import com.scanly.scanlyBackend.exceptions.ProductNotFoundException;
+import com.scanly.scanlyBackend.mappers.OrderMapper;
 import com.scanly.scanlyBackend.models.Order;
 import com.scanly.scanlyBackend.models.OrderItem;
 import com.scanly.scanlyBackend.models.Product;
@@ -33,62 +34,18 @@ public class OrderService {
     @Autowired
     CouponRepository couponRepo;
     @Autowired
-    private ProductService productService;
-    @Autowired
     private CouponService couponService;
+    @Autowired
+    private OrderMapper orderMapper;
 
     public List<OrderResponse> getAll(){
         return orderRepo.findAll().stream()
-                .map(order -> {
-                    List<OrderItemResponse> itemResponses = order.getItems().stream()
-                            .map(item -> new OrderItemResponse(
-                                    item.getId(),
-                                    item.getAmount(),
-                                    item.getProduct().getName(),
-                                    item.getUnitPrice(),
-                                    item.getTaxRate(),
-                                    item.getTotalPrice()
-                            )).toList();
-
-                    BigDecimal totalGross = itemResponses.stream()
-                            .map(OrderItemResponse::totalPriceGross)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                    return new OrderResponse(
-                            order.getOrderId(),
-                            order.getCreationDate(),
-                            itemResponses,
-                            totalGross,
-                            order.getStatus()
-                    );
-                }).toList();
+                .map(orderMapper::toOrderResponse).toList();
     }
 
     public OrderResponse getById(Long orderId){
         return orderRepo.findById(orderId)
-                .map(order -> {
-                    List<OrderItemResponse> itemResponses = order.getItems().stream()
-                            .map(item -> new OrderItemResponse(
-                                    item.getId(),
-                                    item.getAmount(),
-                                    item.getProduct().getName(),
-                                    item.getUnitPrice(),
-                                    item.getTaxRate(),
-                                    item.getTotalPrice()
-                            )).toList();
-
-                    BigDecimal totalGross = itemResponses.stream()
-                            .map(OrderItemResponse::totalPriceGross)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-                    return new OrderResponse(
-                            order.getOrderId(),
-                            order.getCreationDate(),
-                            itemResponses,
-                            totalGross,
-                            order.getStatus()
-                    );
-                }).orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
+                .map(orderMapper::toOrderResponse).orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
     }
 
     public Long createOrder(){
@@ -149,7 +106,7 @@ public class OrderService {
     }
 
     public void deleteOrder(Long orderId){
-        Order order = orderRepo.findById(orderId).get();
+        Order order = orderRepo.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
         orderRepo.delete(order);
     }
 

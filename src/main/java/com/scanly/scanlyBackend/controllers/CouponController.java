@@ -28,20 +28,12 @@ public class CouponController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CouponResponse> getCouponById(@PathVariable Long id) {
-        try {
             return new ResponseEntity<>(couponService.getCouponById(id), HttpStatus.OK);
-        } catch (CouponNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @GetMapping("/code/{code}")
     public ResponseEntity<CouponResponse> getCouponByCode(@PathVariable String code) {
-        try {
             return new ResponseEntity<>(couponService.getCouponByCode(code), HttpStatus.OK);
-        } catch (CouponNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @GetMapping("/validate/{code}")
@@ -55,11 +47,7 @@ public class CouponController {
 
     @PostMapping
     public ResponseEntity<CouponResponse> createCoupon(@RequestBody CouponRequest request) {
-        try {
             return new ResponseEntity<>(couponService.createCoupon(request), HttpStatus.CREATED);
-        } catch (InvalidCouponException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
     }
 
     @PutMapping("/{id}")
@@ -67,40 +55,22 @@ public class CouponController {
             @PathVariable Long id,
             @RequestBody CouponRequest request
     ) {
-        try {
             return new ResponseEntity<>(couponService.updateCoupon(id, request), HttpStatus.OK);
-        } catch (CouponNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (InvalidCouponException e) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCoupon(@PathVariable Long id) {
-        try {
             couponService.deleteCoupon(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (CouponNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<CouponResponse> deactivateCoupon(@PathVariable Long id) {
-        try {
             return new ResponseEntity<>(couponService.deactivateCoupon(id), HttpStatus.OK);
-        } catch (CouponNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 
     @PatchMapping("/{id}/activate")
     public ResponseEntity<CouponResponse> activateCoupon(@PathVariable Long id) {
-        try {
             return new ResponseEntity<>(couponService.activateCoupon(id), HttpStatus.OK);
-        } catch (CouponNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     }
 }
