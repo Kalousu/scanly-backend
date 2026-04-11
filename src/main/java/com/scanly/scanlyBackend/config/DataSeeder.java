@@ -26,9 +26,9 @@ public class DataSeeder {
         return args -> {
             // Add sample products to the database, if empty
             if(productRepository.count() == 0) {
-                productRepository.save(new Product(null, "1234567890123", "Monster White", BigDecimal.valueOf(2.49), BigDecimal.valueOf(0.07), PricingType.UNIT, ProductCategory.OTHERS));
-                productRepository.save(new Product(null, "9876543210987", "Monster not White", BigDecimal.valueOf(99), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
-                productRepository.save(new Product(null, "5555555555555", "Schoko Crossong", BigDecimal.valueOf(0.79), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("1234567890123", "Monster White", BigDecimal.valueOf(2.49), BigDecimal.valueOf(0.07), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("9876543210987", "Monster not White", BigDecimal.valueOf(99), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("5555555555555", "Schoko Crossong", BigDecimal.valueOf(0.79), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
             }
 
             if(orderRepository.count() == 0){
