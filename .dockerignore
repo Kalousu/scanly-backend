@@ -1,0 +1,39 @@
+# Build artifacts
+target/
+*.jar
+*.war
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+!mvnw
+!.mvn/wrapper/maven-wrapper.properties
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.classpath
+.project
+.settings/
+nbproject/
+
+# Version control
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+data/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
