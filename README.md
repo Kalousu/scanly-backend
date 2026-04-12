@@ -1,76 +1,99 @@
-# Scanly Backend
+# Scanly Backend 🚀
 
-Core service for the Scanly self-checkout system. This application provides the REST API for product management, order processing, and payment integration.
+Der Kern-Service für das Scanly SB-Kassen-System. Diese Anwendung stellt die REST-API für die Produktverwaltung, Bestellabwicklung und Zahlungsabwicklung bereit.
 
-## Technical Stack
+---
+
+## 🏛️ System-Architektur
+
+Dieses Repository dient als zentraler Einstiegspunkt für die gesamte Scanly-Anwendung (Multi-Repo-Setup). Über die hier enthaltene `docker-compose.yml` und das `Makefile` lässt sich das gesamte System (Datenbank, Backend und Frontend) orchestrieren.
+
+---
+
+## 🛠️ Tech-Stack
 - **Framework:** Spring Boot (Java)
-- **Runtime:** Java 20/21
-- **Database:** PostgreSQL
+- **Runtime:** Java 21+
+- **Database:** PostgreSQL 17
 - **Containerization:** Docker / Docker Compose
+- **Orchestration:** GNU Make
 - **Testing:** JUnit 5, Testcontainers
 
-## Getting Started
+---
 
-### Prerequisites
-- Docker and Docker Compose
-- Java 21 JDK (for local development)
-- Maven 3.9+ (or use the provided `./mvnw` wrapper)
+## 🚀 Schnellstart (Empfohlen)
 
-### Running with Docker (Recommended)
-The entire environment, including the database and the backend service, can be started with a single command:
+Für den schnellsten Einstieg nutzen wir ein **Makefile**, das alle Docker-Befehle kapselt und eine übersichtliche Erfolgsmeldung ausgibt.
 
-```bash
-docker-compose up --build
-```
+### Voraussetzungen
+- Docker & Docker Compose
+- [GNU Make](https://www.gnu.org/software/make/) (Standard unter Linux/macOS; unter Windows via Git Bash oder Chocolatey/Winget installierbar)
 
-- **API Base URL:** `http://localhost:8080`
-- **Database Port:** `5432`
+### Befehle
 
-### Local Development
-To run the application locally while using a Dockerized database:
+| Befehl | Beschreibung |
+| :--- | :--- |
+| `make up` | Baut und startet das gesamte System (Frontend, Backend, DB) im Hintergrund. |
+| `make logs` | Zeigt die Live-Logs aller Container an. |
+| `make status` | Zeigt den Status aller laufenden Container. |
+| `make restart` | Startet das gesamte System neu. |
+| `make down` | Stoppt und entfernt alle Container. |
 
-1. Start the database service:
+Nach einem `make up` ist das System wie folgt erreichbar:
+- **🌍 Frontend:** [http://localhost](http://localhost)
+- **⚙️ Backend API:** [http://localhost:8080/api](http://localhost:8080/api)
+- **📊 Datenbank:** `localhost:5432`
+
+---
+
+## 💻 Lokale Entwicklung
+
+Falls du nur das Backend lokal (außerhalb von Docker) entwickeln möchtest, aber die Datenbank in Docker benötigst:
+
+1. **Datenbank starten:**
    ```bash
-   docker-compose up db -d
+   docker compose up db -d
    ```
 
-2. Run the application:
+2. **Backend starten:**
    ```bash
    ./mvnw spring-boot:run
    ```
 
-### Running Tests
-The project utilizes Testcontainers for integration testing. Ensure Docker is running before executing tests.
+3. **Tests ausführen:**
+   (Testcontainers wird verwendet, Docker muss also laufen)
+   ```bash
+   ./mvnw test
+   ```
 
-```bash
-./mvnw test
-```
+---
 
-## Configuration
+## ⚙️ Konfiguration
 
-Configuration is managed via environment variables. Default values are provided for local development in `src/main/resources/application.properties`.
+Die Konfiguration erfolgt über Umgebungsvariablen. Standardwerte für die lokale Entwicklung findest du in `src/main/resources/application.properties`.
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `SPRING_DATASOURCE_URL` | JDBC connection string | `jdbc:postgresql://localhost:5432/scanly_db` |
-| `SPRING_DATASOURCE_USERNAME` | Database user | `scanly_user` |
-| `SPRING_DATASOURCE_PASSWORD` | Database password | `scanly123` |
-| `SPRING_JPA_HIBERNATE_DDL_AUTO` | Hibernate DDL strategy | `create-drop` |
+| Variable | Beschreibung | Standard |
+| :--- | :--- | :--- |
+| `SPRING_DATASOURCE_URL` | JDBC Connection String | `jdbc:postgresql://db:5432/scanly_db` |
+| `SPRING_DATASOURCE_USERNAME` | Datenbank-User | `scanly_user` |
+| `SPRING_DATASOURCE_PASSWORD` | Datenbank-Passwort | `scanly123` |
+| `SPRING_JPA_HIBERNATE_DDL_AUTO` | Hibernate Strategie | `update` |
 
-## API Endpoints
+---
 
-The backend exposes several functional modules:
+## 📑 API & Dokumentation
 
-- **Product Catalog:** `/api/products` - Manage and retrieve product data.
-- **Order Management:** `/api/orders` - Core checkout logic and cart state.
-- **Coupon System:** `/api/coupons` - Validation and application of discounts.
-- **Payment Processing:** `/api/payments` - Transaction state management.
+Die Backend-Module sind wie folgt aufgeteilt:
+- **Produkte:** `/api/products` - Verwaltung des Katalogs.
+- **Bestellungen:** `/api/orders` - Checkout-Logik und Warenkorb.
+- **Coupons:** `/api/coupons` - Validierung von Rabatten.
 
-For detailed testing of the endpoints, use the **Bruno** collections located in the `/scanly-bruno` directory.
+Nutze für detaillierte API-Tests die **Bruno-Kollektion** im Verzeichnis `/scanly-bruno`.
 
-## Project Structure
-- `src/main/java/com/scanly/scanlyBackend/controllers`: REST API layer.
-- `src/main/java/com/scanly/scanlyBackend/services`: Business logic layer.
-- `src/main/java/com/scanly/scanlyBackend/repository`: Data access layer (JPA).
-- `src/main/java/com/scanly/scanlyBackend/dtos`: Data Transfer Objects for API contracts.
-- `src/main/java/com/scanly/scanlyBackend/models`: JPA Entity definitions.
+---
+
+## 📂 Projekt-Struktur
+- `src/main/java/com/scanly/scanlyBackend/controllers`: REST-API Layer.
+- `src/main/java/com/scanly/scanlyBackend/services`: Business-Logik.
+- `src/main/java/com/scanly/scanlyBackend/repository`: Datenzugriff (JPA).
+- `src/main/java/com/scanly/scanlyBackend/dtos`: API-Verträge (DTOs).
+- `src/main/java/com/scanly/scanlyBackend/models`: JPA-Entitäten.
