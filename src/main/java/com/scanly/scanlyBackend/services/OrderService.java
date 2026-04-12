@@ -54,8 +54,10 @@ public class OrderService {
 
     @Transactional
     public void addItem(Long orderId, AddOrderItemRequest item){
-        Order order = orderRepo.findById(orderId).get();
-        Product product = productRepo.findByCode(item.code()).get();
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
+        Product product = productRepo.findByCode(item.code())
+                .orElseThrow(() -> new ProductNotFoundException("Product with code " + item.code() + " not found"));
         Optional<OrderItem> existingItem = order.getItems().stream()
                 .filter(item1 -> item1.getProduct().getCode().equals(product.getCode())).findFirst();
         if(existingItem.isPresent()){
@@ -71,17 +73,26 @@ public class OrderService {
             orderItem.setTotalPrice(orderItem.calculateTotalPrice(orderItem.getAmount(), orderItem.getTaxRate(), orderItem.getUnitPrice()));
             order.addItem(orderItem);
             BigDecimal orderTotal = order.getItems().stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-            order.setTotalPrice(orderTotal);
+            
+            if (order.getAppliedCoupon() != null) {
+                BigDecimal newDiscount = couponService.calculateDiscount(order.getAppliedCoupon(), orderTotal);
+                order.setDiscountAmount(newDiscount);
+                order.setTotalPrice(orderTotal.subtract(newDiscount).max(BigDecimal.ZERO));
+            } else {
+                order.setTotalPrice(orderTotal);
+            }
+            
             orderRepo.save(order);
         }
     }
 
     public void updateItemQuantity(Long orderId, Long itemId, UpdateItemQuantityRequest request){
-        Order order = orderRepo.findById(orderId).get();
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
         OrderItem item = order.getItems().stream()
                 .filter(item1 -> item1.getId().equals(itemId))
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new ProductNotFoundException("Item with id " + itemId + " not found"));
 
         BigDecimal newQuantity = item.getAmount().add(request.delta());
         if(newQuantity.compareTo(BigDecimal.ZERO) == 0){
@@ -89,23 +100,57 @@ public class OrderService {
         } else {
             item.setAmount(newQuantity);
             item.setTotalPrice(item.calculateTotalPrice(newQuantity, item.getTaxRate(), item.getUnitPrice()));
+            
+            BigDecimal orderTotal = order.getItems().stream()
+                    .map(OrderItem::getTotalPrice)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            
+            if (order.getAppliedCoupon() != null) {
+                BigDecimal newDiscount = couponService.calculateDiscount(order.getAppliedCoupon(), orderTotal);
+                order.setDiscountAmount(newDiscount);
+                order.setTotalPrice(orderTotal.subtract(newDiscount).max(BigDecimal.ZERO));
+            } else {
+                order.setTotalPrice(orderTotal);
+            }
         }
         orderRepo.save(order);
     }
 
     public void deleteItem(Long orderId, Long itemId) {
-        Order order = orderRepo.findById(orderId).get();
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
         List<OrderItem> items = order.getItems();
         if(!items.removeIf(item -> item.getId().equals(itemId))){
             throw new ProductNotFoundException("Product with id " + itemId + " not found");
-        };
-        BigDecimal orderTotal = order.getItems().stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-        order.setTotalPrice(orderTotal);
+        }
+        
+        BigDecimal orderTotal = order.getItems().stream()
+                .map(OrderItem::getTotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        
+        if (order.getAppliedCoupon() != null) {
+            BigDecimal newDiscount = couponService.calculateDiscount(order.getAppliedCoupon(), orderTotal);
+            order.setDiscountAmount(newDiscount);
+            order.setTotalPrice(orderTotal.subtract(newDiscount).max(BigDecimal.ZERO));
+        } else {
+            order.setTotalPrice(orderTotal);
+        }
+        
         orderRepo.save(order);
     }
 
     public void deleteOrder(Long orderId){
-        Order order = orderRepo.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
+        Order order = orderRepo.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
+        
+        if (order.getAppliedCoupon() != null) {
+            Coupon coupon = order.getAppliedCoupon();
+            if (coupon.getCurrentUsages() > 0) {
+                coupon.setCurrentUsages(coupon.getCurrentUsages() - 1);
+                couponRepo.save(coupon);
+            }
+        }
+        
         orderRepo.delete(order);
     }
 
@@ -146,6 +191,14 @@ public class OrderService {
     public void removeCoupon(Long orderId) {
         Order order = orderRepo.findById(orderId)
                 .orElseThrow(() -> new OrderNotFoundException("Order with id " + orderId + " not found"));
+
+        if (order.getAppliedCoupon() != null) {
+            Coupon coupon = order.getAppliedCoupon();
+            if (coupon.getCurrentUsages() > 0) {
+                coupon.setCurrentUsages(coupon.getCurrentUsages() - 1);
+                couponRepo.save(coupon);
+            }
+        }
 
         order.setAppliedCoupon(null);
         order.setDiscountAmount(BigDecimal.ZERO);

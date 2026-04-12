@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @Getter
@@ -39,6 +40,7 @@ public class OrderItem {
     }
 
     public BigDecimal calculateTotalPrice(BigDecimal amount, BigDecimal taxRate, BigDecimal unitPrice) {
-        return amount.multiply((unitPrice.multiply(taxRate.add(BigDecimal.ONE))));
+        return amount.multiply(unitPrice.multiply(taxRate.add(BigDecimal.ONE)))
+                .setScale(2, RoundingMode.HALF_UP);
     }
 }

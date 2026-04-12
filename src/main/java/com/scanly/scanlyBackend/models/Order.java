@@ -27,7 +27,7 @@ public class Order {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long orderId;
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new java.util.ArrayList<>();
     @CreationTimestamp

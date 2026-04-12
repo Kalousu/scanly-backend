@@ -50,6 +50,22 @@ public class CouponService {
             throw new InvalidCouponException("Coupon with code " + request.code() + " already exists");
         }
 
+        if (request.value().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidCouponException("Coupon value must be greater than 0");
+        }
+
+        if (request.minOrderValue().compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidCouponException("Minimum order value cannot be negative");
+        }
+
+        if (request.type() == CouponType.PERCENTAGE && request.value().compareTo(BigDecimal.valueOf(100)) > 0) {
+            throw new InvalidCouponException("Percentage discount cannot exceed 100%");
+        }
+
+        if (request.maxUsages() != null && request.maxUsages() < 0) {
+            throw new InvalidCouponException("Maximum usages cannot be negative");
+        }
+
         Coupon coupon = new Coupon();
         coupon.setCode(request.code().toUpperCase().trim());
         coupon.setLabel(request.label());
@@ -74,6 +90,22 @@ public class CouponService {
         if (!coupon.getCode().equalsIgnoreCase(request.code()) &&
                 couponRepository.existsByCodeIgnoreCase(request.code())) {
             throw new InvalidCouponException("Coupon with code " + request.code() + " already exists");
+        }
+
+        if (request.value().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidCouponException("Coupon value must be greater than 0");
+        }
+
+        if (request.minOrderValue().compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidCouponException("Minimum order value cannot be negative");
+        }
+
+        if (request.type() == CouponType.PERCENTAGE && request.value().compareTo(BigDecimal.valueOf(100)) > 0) {
+            throw new InvalidCouponException("Percentage discount cannot exceed 100%");
+        }
+
+        if (request.maxUsages() != null && request.maxUsages() < 0) {
+            throw new InvalidCouponException("Maximum usages cannot be negative");
         }
 
         coupon.setCode(request.code().toUpperCase().trim());
