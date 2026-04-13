@@ -1,8 +1,10 @@
 package com.scanly.scanlyBackend.services;
 
 import com.scanly.scanlyBackend.dtos.CouponRequest;
+import com.scanly.scanlyBackend.dtos.CouponResponse;
 import com.scanly.scanlyBackend.dtos.CouponValidationResponse;
 import com.scanly.scanlyBackend.exceptions.InvalidCouponException;
+import com.scanly.scanlyBackend.mappers.CouponMapper;
 import com.scanly.scanlyBackend.models.Coupon;
 import com.scanly.scanlyBackend.models.enums.CouponType;
 import com.scanly.scanlyBackend.repository.CouponRepository;
@@ -23,6 +25,9 @@ class CouponServiceTest {
 
     @Mock
     private CouponRepository couponRepository;
+
+    @Mock
+    private CouponMapper couponMapper;
 
     @InjectMocks
     private CouponService couponService;
@@ -60,6 +65,13 @@ class CouponServiceTest {
         Coupon coupon = new Coupon("SAVE10", "Save 10", CouponType.FIXED, new BigDecimal("10.00"), new BigDecimal("20.00"));
         coupon.setActive(true);
         when(couponRepository.findByCodeIgnoreCase("SAVE10")).thenReturn(Optional.of(coupon));
+        
+        CouponResponse couponResponse = new CouponResponse(
+            1L, "SAVE10", "Save 10", CouponType.FIXED, 
+            new BigDecimal("10.00"), new BigDecimal("20.00"), 
+            true, null, null, null, 0, null
+        );
+        when(couponMapper.mapToResponse(coupon)).thenReturn(couponResponse);
         
         CouponValidationResponse response = couponService.validateCoupon("SAVE10", new BigDecimal("50.00"));
         
@@ -119,5 +131,86 @@ class CouponServiceTest {
         
         discount = couponService.calculateDiscount(new Coupon(), null);
         assertEquals(BigDecimal.ZERO, discount);
+    }
+
+    @Test
+    void testValidateCouponInactive() {
+        Coupon coupon = new Coupon("INACTIVE", "Inactive", CouponType.FIXED, BigDecimal.TEN, BigDecimal.ZERO);
+        coupon.setActive(false);
+        when(couponRepository.findByCodeIgnoreCase("INACTIVE")).thenReturn(java.util.Optional.of(coupon));
+        
+        CouponValidationResponse response = couponService.validateCoupon("INACTIVE", new BigDecimal("50.00"));
+        
+        assertFalse(response.valid());
+        assertTrue(response.message().contains("nicht mehr gueltig"));
+    }
+
+    @Test
+    void testValidateCouponEmptyCode() {
+        CouponValidationResponse response = couponService.validateCoupon("", new BigDecimal("50.00"));
+        
+        assertFalse(response.valid());
+        assertTrue(response.message().contains("eingeben"));
+    }
+
+    @Test
+    void testValidateCouponWhitespaceCode() {
+        CouponValidationResponse response = couponService.validateCoupon("   ", new BigDecimal("50.00"));
+        
+        assertFalse(response.valid());
+        assertTrue(response.message().contains("eingeben"));
+    }
+
+    @Test
+    void testCalculateDiscountPercentageZeroSubtotal() {
+        Coupon coupon = new Coupon();
+        coupon.setType(CouponType.PERCENTAGE);
+        coupon.setValue(new BigDecimal("10.00"));
+        
+        BigDecimal discount = couponService.calculateDiscount(coupon, BigDecimal.ZERO);
+        
+        assertEquals(BigDecimal.ZERO, discount);
+    }
+
+    @Test
+    void testCalculateDiscountFixedExceedsSubtotal() {
+        Coupon coupon = new Coupon();
+        coupon.setType(CouponType.FIXED);
+        coupon.setValue(new BigDecimal("100.00"));
+        
+        BigDecimal subtotal = new BigDecimal("50.00");
+        BigDecimal discount = couponService.calculateDiscount(coupon, subtotal);
+        
+        assertEquals(new BigDecimal("50.00").setScale(2, RoundingMode.HALF_UP), discount);
+    }
+
+    @Test
+    void testCreateCouponWithInvalidValue() {
+        CouponRequest request = new CouponRequest(
+            "INVALID", "label", CouponType.FIXED, 
+            BigDecimal.ZERO, BigDecimal.ZERO, true, null, null, null
+        );
+        
+        assertThrows(InvalidCouponException.class, () -> couponService.createCoupon(request));
+    }
+
+    @Test
+    void testCreateCouponWithNegativeMinOrderValue() {
+        CouponRequest request = new CouponRequest(
+            "INVALID", "label", CouponType.FIXED, 
+            BigDecimal.TEN, new BigDecimal("-10.00"), true, null, null, null
+        );
+        
+        assertThrows(InvalidCouponException.class, () -> couponService.createCoupon(request));
+    }
+
+    @Test
+    void testCreateCouponPercentageOver100() {
+        CouponRequest request = new CouponRequest(
+            "INVALID", "label", CouponType.PERCENTAGE, 
+            new BigDecimal("150.00"), BigDecimal.ZERO, true, null, null, null
+        );
+        
+        assertThrows(InvalidCouponException.class, () -> couponService.createCoupon(request));
     }
 }

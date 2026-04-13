@@ -27,7 +27,17 @@ public class DataSeeder {
             if(productRepository.count() == 0) {
                 productRepository.save(new Product("1234567890123", "Monster White", BigDecimal.valueOf(2.49), BigDecimal.valueOf(0.07), PricingType.UNIT, ProductCategory.OTHERS));
                 productRepository.save(new Product("9876543210987", "Monster not White", BigDecimal.valueOf(99), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
-                productRepository.save(new Product("5555555555555", "Schoko Crossong", BigDecimal.valueOf(0.79), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("1000", "Schoko Crossong", BigDecimal.valueOf(1.00), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.BAKERY));
+                productRepository.save(new Product("2000", "Bronane", BigDecimal.valueOf(1.10), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.FRUITS_VEGETABLES));
+                productRepository.save(new Product("3000", "Lauch", BigDecimal.valueOf(0.50), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.FRUITS_VEGETABLES));
+                productRepository.save(new Product("42143949", "Saskia Medium", BigDecimal.valueOf(0.50), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("10293847", "Evian Naturell 0,5L", BigDecimal.valueOf(0.79), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("20394857", "Adelholzener Classic 0,75L", BigDecimal.valueOf(1.09), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("30485967", "Coca-Cola 0,33L", BigDecimal.valueOf(1.29), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("40596071", "Bionade Holunder 0,33L", BigDecimal.valueOf(1.49), BigDecimal.valueOf(0.19), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("50607182", "Apfelsaft Naturtrüb 1L", BigDecimal.valueOf(1.89), BigDecimal.valueOf(0.07), PricingType.UNIT, ProductCategory.OTHERS));
+                productRepository.save(new Product("60718293", "Orangensaft 1L", BigDecimal.valueOf(1.99), BigDecimal.valueOf(0.07), PricingType.UNIT, ProductCategory.OTHERS));
+
             }
 
             if(orderRepository.count() == 0){
