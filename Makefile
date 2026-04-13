@@ -16,11 +16,11 @@ help:
 # Start the system
 up:
 	@echo "🚀 Starting Scanly System..."
-	docker compose up --build -d
+	docker-compose up --build -d
 	@echo ""
 	@echo "✅ System is starting up!"
 	@echo "--------------------------------------------------"
-	@echo "🌍 Frontend:    http://localhost"
+	@echo "🌍 Frontend:    http://localhost:8081"
 	@echo "⚙️  Backend API: http://localhost:8080/api"
 	@echo "📊 Database:    localhost:5432"
 	@echo "--------------------------------------------------"
@@ -29,15 +29,15 @@ up:
 # Stop the system
 down:
 	@echo "🛑 Stopping Scanly System..."
-	docker compose down
+	docker-compose down
 
 # Restart the system
 restart: down up
 
 # Show logs
 logs:
-	docker compose logs -f
+	docker-compose logs -f
 
 # Show process status
 ps status:
-	docker compose ps
+	docker-compose ps

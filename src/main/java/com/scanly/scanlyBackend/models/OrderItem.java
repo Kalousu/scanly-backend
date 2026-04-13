@@ -40,7 +40,7 @@ public class OrderItem {
     }
 
     public BigDecimal calculateTotalPrice(BigDecimal amount, BigDecimal taxRate, BigDecimal unitPrice) {
-        return amount.multiply(unitPrice.multiply(taxRate.add(BigDecimal.ONE)))
-                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal grossUnitPrice = unitPrice.multiply(taxRate.add(BigDecimal.ONE));
+        return amount.multiply(grossUnitPrice).setScale(2, RoundingMode.HALF_UP);
     }
 }

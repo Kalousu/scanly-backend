@@ -1,0 +1,89 @@
+@startuml Scanly Backend - C4 Component Diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component Diagram for Scanly Backend
+
+System_Ext(client, "Client Application", "Frontend or API Consumer")
+
+System_Boundary(backend, "Scanly Backend System") {
+    
+    rectangle "REST Controllers" {
+        Component(order_ctrl, "OrderController", "Spring REST", "Order management")
+        Component(product_ctrl, "ProductController", "Spring REST", "Product catalog")
+        Component(coupon_ctrl, "CouponController", "Spring REST", "Coupon management")
+        Component(payment_ctrl, "PaymentController", "Spring REST", "Payment processing")
+        Component(receipt_ctrl, "ReceiptController", "Spring REST", "Receipt generation")
+    }
+    
+    rectangle "Business Logic" {
+        Component(order_svc, "OrderService", "Spring Service", "Order logic")
+        Component(product_svc, "ProductService", "Spring Service", "Product logic")
+        Component(coupon_svc, "CouponService", "Spring Service", "Coupon logic")
+        Component(payment_svc, "PaymentService", "Spring Service", "Payment logic")
+        Component(receipt_svc, "ReceiptService", "Spring Service", "Receipt logic")
+    }
+    
+    rectangle "Data Access" {
+        ComponentDb(order_repo, "OrderRepository", "Spring Data JPA", "Order persistence")
+        ComponentDb(product_repo, "ProductRepository", "Spring Data JPA", "Product persistence")
+        ComponentDb(coupon_repo, "CouponRepository", "Spring Data JPA", "Coupon persistence")
+        ComponentDb(payment_repo, "PaymentRepository", "Spring Data JPA", "Payment persistence")
+    }
+    
+    rectangle "Domain Models" {
+        Component(order_model, "Order", "JPA Entity", "Order aggregate")
+        Component(order_item_model, "OrderItem", "JPA Entity", "Line items")
+        Component(product_model, "Product", "JPA Entity", "Product catalog")
+        Component(coupon_model, "Coupon", "JPA Entity", "Discount coupons")
+        Component(payment_model, "Payment", "JPA Entity", "Payment records")
+    }
+    
+    ContainerDb(database, "PostgreSQL", "PostgreSQL 17", "Stores all data")
+}
+
+' Client to Controllers
+Rel(client, order_ctrl, "HTTP/JSON", "REST API")
+Rel(client, product_ctrl, "HTTP/JSON", "REST API")
+Rel(client, coupon_ctrl, "HTTP/JSON", "REST API")
+Rel(client, payment_ctrl, "HTTP/JSON", "REST API")
+Rel(client, receipt_ctrl, "HTTP/JSON", "REST API")
+
+' Controllers to Services
+Rel(order_ctrl, order_svc, "Uses")
+Rel(product_ctrl, product_svc, "Uses")
+Rel(coupon_ctrl, coupon_svc, "Uses")
+Rel(payment_ctrl, payment_svc, "Uses")
+Rel(receipt_ctrl, receipt_svc, "Uses")
+
+' Service to Service
+Rel(order_svc, coupon_svc, "Validates coupons")
+Rel(payment_svc, order_svc, "Updates order status")
+
+' Services to Repositories
+Rel(order_svc, order_repo, "CRUD operations")
+Rel(order_svc, product_repo, "Read product data")
+Rel(order_svc, coupon_repo, "Read/update coupons")
+Rel(product_svc, product_repo, "CRUD operations")
+Rel(coupon_svc, coupon_repo, "CRUD operations")
+Rel(payment_svc, payment_repo, "CRUD operations")
+Rel(payment_svc, order_repo, "Update order")
+Rel(receipt_svc, order_repo, "Read order data")
+
+' Repositories to Models
+Rel(order_repo, order_model, "Manages")
+Rel(order_repo, order_item_model, "Manages")
+Rel(product_repo, product_model, "Manages")
+Rel(coupon_repo, coupon_model, "Manages")
+Rel(payment_repo, payment_model, "Manages")
+
+' Repositories to Database
+Rel(order_repo, database, "JDBC/Hibernate")
+Rel(product_repo, database, "JDBC/Hibernate")
+Rel(coupon_repo, database, "JDBC/Hibernate")
+Rel(payment_repo, database, "JDBC/Hibernate")
+
+SHOW_LEGEND()
+
+@enduml
